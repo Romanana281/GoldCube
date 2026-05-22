@@ -27,11 +27,22 @@
 
 ### Через Docker (рекомендуется)
 
+Создай `.env` в корне проекта (рядом с `docker-compose.yml`):
+
+```env
+POSTGRES_DB=goldcube
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+VKApiKey=your_vk_group_token
+```
+
 ```bash
 git clone https://github.com/Romanana281/GoldCube.git
 cd GoldCube
-docker-compose up -d
+docker compose up -d --build
 ```
+
+Бот ждёт готовности PostgreSQL, применяет миграции и только потом запускает Long Poll.
 
 Локальный запуск
 ```bash

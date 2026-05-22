@@ -105,7 +105,8 @@ namespace GoldCube
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[GameSession] {ex.Message}");
+                    var detail = ex.InnerException?.Message ?? ex.Message;
+                    Console.WriteLine($"[GameSession] {detail}");
                 }
 
                 await Task.Delay(1000);

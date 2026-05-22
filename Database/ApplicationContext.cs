@@ -10,8 +10,12 @@ namespace GoldCube
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            DotNetEnv.Env.Load();
-            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                ?? throw new InvalidOperationException(
+                    "DATABASE_URL не задан. Для Docker: docker-compose. Локально: .env или переменная окружения.");
+
+            optionsBuilder.UseNpgsql(connectionString, npgsql =>
+                npgsql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(3), errorCodesToAdd: null));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

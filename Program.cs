@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace GoldCube
 {
@@ -8,7 +8,11 @@ namespace GoldCube
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("ru-RU");
 
-            DotNetEnv.Env.Load();
+            if (File.Exists(".env"))
+                DotNetEnv.Env.Load();
+
+            await WaitForDatabaseAsync();
+            await ApplyMigrationsAsync();
             // var config = new ConfigurationBuilder()
             //     .AddUserSecrets<Program>()
             //     .Build();
@@ -34,6 +38,39 @@ namespace GoldCube
 
             var bot = new VkBotService(vkApi, MessageHandler);
             await bot.Run();
+        }
+
+        private static async Task WaitForDatabaseAsync()
+        {
+            const int maxAttempts = 30;
+
+            for (var attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    await using var db = new ApplicationContext();
+                    if (await db.Database.CanConnectAsync())
+                    {
+                        Console.WriteLine("[DB] Подключение к PostgreSQL установлено.");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[DB] Попытка {attempt}/{maxAttempts}: {ex.Message}");
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(2));
+            }
+
+            throw new InvalidOperationException("PostgreSQL недоступен после ожидания.");
+        }
+
+        private static async Task ApplyMigrationsAsync()
+        {
+            await using var db = new ApplicationContext();
+            await db.Database.MigrateAsync();
+            Console.WriteLine("[DB] Миграции применены.");
         }
     }
 }

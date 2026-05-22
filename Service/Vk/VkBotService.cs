@@ -62,10 +62,13 @@ namespace GoldCube
                     PropertyNameCaseInsensitive = true
                 }) ?? throw new InvalidOperationException("Не удалось получить Long Poll сервер VK.");
 
+            var response = settings.Response
+                ?? throw new InvalidOperationException("VK Long Poll: пустой response.");
+
             return (
-                settings.Response.Server!,
-                settings.Response.Key!,
-                settings.Response.Ts!);
+                response.Server ?? throw new InvalidOperationException("VK Long Poll: нет server."),
+                response.Key ?? throw new InvalidOperationException("VK Long Poll: нет key."),
+                response.Ts ?? throw new InvalidOperationException("VK Long Poll: нет ts."));
         }
     }
 }

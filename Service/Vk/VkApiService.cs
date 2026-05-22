@@ -30,7 +30,7 @@ namespace GoldCube
 
         public async Task SendMessage(Message message)
         {
-            var encodedText = Uri.EscapeDataString(message.Text);
+            var encodedText = Uri.EscapeDataString(message.Text ?? string.Empty);
             var url =
                 $"https://api.vk.com/method/messages.send" +
                 $"?peer_id={message.UserId}" +

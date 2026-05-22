@@ -1,0 +1,7 @@
+bin/
+obj/
+.git/
+.env
+*.md
+.vs/
+.idea/
