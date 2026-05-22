@@ -10,8 +10,8 @@ namespace GoldCube
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(
-                "");
+            DotNetEnv.Env.Load();
+            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

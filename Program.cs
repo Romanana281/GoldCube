@@ -8,14 +8,16 @@ namespace GoldCube
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("ru-RU");
 
-            var config = new ConfigurationBuilder()
-                .AddUserSecrets<Program>()
-                .Build();
+            DotNetEnv.Env.Load();
+            // var config = new ConfigurationBuilder()
+            //     .AddUserSecrets<Program>()
+            //     .Build();
 
             var vkApi = new VkApiService(
                 new VkSettings
                 {
-                    Token = config["VK:ApiKey"]!
+                    // Token = config["VK:ApiKey"]!
+                    Token = Environment.GetEnvironmentVariable("VKApiKey")
                 });
 
             var EndGameService = new EndGameService(vkApi);

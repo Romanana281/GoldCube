@@ -5,6 +5,7 @@ obj/
 *.suo
 *.cache
 *.lscache
+.env
 
 ## IDE
 .vs/
